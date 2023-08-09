@@ -6,23 +6,14 @@ import { Form } from "react-bootstrap";
 import CustomButton from "../../components/ui/Button";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
 // זה השלב - לעשות EDIT
-const ProductEdit = () => {
+const ProductAdd = () => {
   const [productD, setProductD] = useState({});
   const { productId } = useParams();
   const ProductCtx = useContext(ProductContext);
-  const findProductAndSetState = useCallback(() => {
-    const foundProduct = ProductCtx?.productList?.find(
-      (item) => item._id === productId
-    );
-    setProductD(foundProduct);
-  }, [ProductCtx?.productList, productId]);
 
-  useEffect(() => {
-    findProductAndSetState();
-  }, [findProductAndSetState]);
   const formSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    ProductCtx.crudHandler("update", productId, null, null, productD);
+    ProductCtx.crudHandler("add", productId, null, null, productD);
   };
   const nav = useNavigate();
   const handleInputChange = (
@@ -48,6 +39,7 @@ const ProductEdit = () => {
         <div className="bgc1 p-2 w_100 radius1">
           <label className="p-1 radius1 text-white bgc2">Title</label>
           <input
+            required
             type="text"
             className="form-control text-center"
             defaultValue={productD?.title}
@@ -57,6 +49,7 @@ const ProductEdit = () => {
         <div className="bgc1 p-2 w_100 radius1">
           <label className="p-1 radius1 text-white bgc2">Description</label>
           <input
+            required
             className="form-control text-center"
             type="text"
             defaultValue={productD?.desc}
@@ -66,6 +59,7 @@ const ProductEdit = () => {
         <div className="bgc1 p-2 w_100 radius1">
           <label className="p-1 radius1 text-white bgc2">Price</label>
           <input
+            required
             className="form-control text-center"
             type="number"
             defaultValue={productD?.price}
@@ -75,9 +69,13 @@ const ProductEdit = () => {
         <div className="bgc1 p-2 w_100 radius1">
           <label className="p-1 radius1 text-white bgc2">Category</label>
           <select
+            required
             className="form-control text-center"
             onChange={(e) => handleInputChange(e, `category`)}
           >
+            <option value="" disabled selected>
+              Select category
+            </option>
             {ProductCtx?.categoryList?.map((item, i) => {
               return (
                 <option key={i} value={item?._id}>
@@ -93,4 +91,4 @@ const ProductEdit = () => {
   );
 };
 
-export default ProductEdit;
+export default ProductAdd;

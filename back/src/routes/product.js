@@ -3,10 +3,32 @@ import { Product } from "../db/models/product.js";
 import { Category } from "../db/models/category.js";
 import { isAdmin } from "../middleware/roles/isAdmin.js";
 import { validateToken } from "../middleware/user/validateToken.js";
+import {
+  performUpdate,
+  updateProduct,
+} from "../middleware/product/updateProduct.js";
+import {
+  createProduct,
+  saveNewProduct,
+  setCategoryForProduct,
+} from "../middleware/product/addProduct.js";
 
 const router = Router();
-router.put("/editProduct", validateToken, isAdmin, async (req, res) => {});
-
+router.post(
+  "/addProduct",
+  validateToken,
+  isAdmin,
+  createProduct,
+  setCategoryForProduct,
+  saveNewProduct
+);
+router.put(
+  "/updateProduct/:productId",
+  validateToken,
+  isAdmin,
+  updateProduct,
+  performUpdate
+);
 router.delete(
   "/deleteProduct/:productId",
   validateToken,

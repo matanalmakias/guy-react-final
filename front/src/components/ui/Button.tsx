@@ -5,15 +5,17 @@ type ButtonProps = {
   classNames: string;
   children: React.ReactNode;
   type: string;
+  onPress: () => void;
 };
 
 const CustomButton: React.FC<ButtonProps> = ({
   type,
   classNames,
   children,
+  onPress,
 }) => {
   return (
-    <BootstrapButton type={type} className={classNames}>
+    <BootstrapButton onClick={onPress} type={type} className={classNames}>
       {children}
     </BootstrapButton>
   );

@@ -2,25 +2,33 @@ import React, { createContext, useState, useEffect } from "react";
 import { ChildrenType } from "../utils/types";
 import { toast } from "react-toastify";
 import productServices from "../services/product.service";
+import { useNavigate } from "react-router-dom";
 
 type ProductContextValue = {
   productList: any[];
-  categoryList: any[]; 
-  crudHandler:(action:string,productId:string,filteredProducts:any[],setFilteredProducts:any)=>void
+  categoryList: any[];
+  crudHandler: (
+    action: string,
+    productId: string,
+    filteredProducts: any[],
+    setFilteredProducts: any
+  ) => void;
 };
 
 const initialContextValue: ProductContextValue = {
   productList: [],
-  categoryList: [],  
-  crudHandler:()=>{},
-
+  categoryList: [],
+  crudHandler: () => {},
 };
 
-export const ProductContext = createContext<ProductContextValue>(initialContextValue);
+export const ProductContext =
+  createContext<ProductContextValue>(initialContextValue);
 
-export const ProductContextProvider: React.FC<ChildrenType> = ({ children }) => {
+export const ProductContextProvider: React.FC<ChildrenType> = ({
+  children,
+}) => {
   const [productList, setProductList] = useState<any[]>([]);
-  const [categoryList, setCategoryList] = useState<any[]>([]); 
+  const [categoryList, setCategoryList] = useState<any[]>([]);
 
   useEffect(() => {
     productServices
@@ -37,19 +45,35 @@ export const ProductContextProvider: React.FC<ChildrenType> = ({ children }) => 
         console.error("Error fetching categories:", error);
       });
   }, []);
-const crudHandler = async (
-  action: string,
-  productId: string,
-  filteredProducts: any[],
-  setFilteredProducts: React.Dispatch<React.SetStateAction<any[]>> // Correct type for setFilteredProducts
-) => {
-  if (action === "delete") {
-    const updatedProducts = filteredProducts.filter(item => item?._id !== productId);
-    setFilteredProducts(updatedProducts);
-    productServices.deleteProduct(productId).then(res=>toast(res.data))
-  }
-};
-  const contextValue: ProductContextValue = { crudHandler,categoryList, productList };
+  const nav = useNavigate();
+  const crudHandler = async (
+    action: string,
+    productId: string,
+    filteredProducts?: any[],
+    setFilteredProducts?: React.Dispatch<React.SetStateAction<any[]>>,
+    updatedProduct?: {}
+  ) => {
+    if (action === "delete") {
+      const updatedProducts = filteredProducts.filter(
+        (item) => item?._id !== productId
+      );
+      setFilteredProducts(updatedProducts);
+      productServices.deleteProduct(productId).then((res) => toast(res.data));
+    } else if (action === `edit`) {
+      nav(`/product-edit/${productId}`);
+    } else if (action === `update`) {
+      productServices
+        .updateProduct(productId, updatedProduct)
+        .then((res) => toast(res.data));
+    } else if (action === `add`) {
+      productServices.addProduct(updatedProduct).then((res) => toast(res.data));
+    }
+  };
+  const contextValue: ProductContextValue = {
+    crudHandler,
+    categoryList,
+    productList,
+  };
 
   return (
     <ProductContext.Provider value={contextValue}>

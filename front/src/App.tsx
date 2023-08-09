@@ -11,8 +11,9 @@ import Products from "./pages/product/Products.js";
 import About from "./pages/About.js";
 import Contact from "./pages/Contact.js";
 import { ToastContainer } from "react-toastify";
+import ProductEdit from "./pages/product/ProductEdit.js";
+import ProductAdd from "./pages/product/ProductAdd.js";
 function App() {
-
   return (
     <div className="w-100">
       <Header1 />
@@ -27,9 +28,10 @@ function App() {
           path="/products/:chosenCategory/:categoryName"
           element={<Products />}
         />
+        <Route path="/product-edit/:productId" element={<ProductEdit />} />
+        <Route path="/product-add/" element={<ProductAdd />} />
       </Routes>
       <Footer1 />
-    
     </div>
   );
 }
